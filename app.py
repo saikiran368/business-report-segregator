@@ -1,5 +1,5 @@
 """
-app.py  —  PDF Table Extractor
+app.py  —  Business Report Segregator
 Flow:
   1. (Optional) Upload reference doc  → extract its table headers
   2. Upload PDF                        → extract tables + snapshots
@@ -22,7 +22,7 @@ from word_output         import build_word_report
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="PDF Table Extractor",
+    page_title="Business Report Segregator",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -113,11 +113,11 @@ with st.sidebar:
 """)
 
 # ── Header ─────────────────────────────────────────────────────────────────────
-st.markdown('<p class="main-header">📊 PDF Table Extractor</p>',
+st.markdown('<p class="main-header">📊 Business Report Segregator</p>',
             unsafe_allow_html=True)
 st.markdown(
     '<p class="sub-header">'
-    'PDF → extract tables → cross-match headers → AI summary from real data → Word report'
+    'Upload PDF → extract tables → AI summaries → Download Word report'
     '</p>', unsafe_allow_html=True)
 
 if not cred_ok:

@@ -1,4 +1,4 @@
-# 📊 PDF Table Extractor
+# 📊 Business Report Segregator
 
 Automatically extract tables from PDF files, generate AI-powered summaries using **Amazon Bedrock (Claude)**, and export to a Word document — via a clean web UI.
 
@@ -20,13 +20,13 @@ git init
 git add .
 git commit -m "Initial commit"
 # Create a repo on github.com, then:
-git remote add origin https://github.com/YOUR_USERNAME/pdf-table-extractor.git
+git remote add origin https://github.com/YOUR_USERNAME/business-report-segregator.git
 git push -u origin main
 ```
 
 ### Step 2 — Create IAM User for Bedrock
 1. Go to **AWS Console → IAM → Users → Create user**
-2. Name it `pdf-table-extractor-bot`
+2. Name it `business-report-segregator-bot`
 3. Attach this inline policy:
 ```json
 {
