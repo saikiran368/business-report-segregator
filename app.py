@@ -95,6 +95,14 @@ with st.sidebar:
     model_map = get_available_models()
     model_id = model_map[st.selectbox("Model", list(model_map.keys()))]
 
+    st.markdown("### 🎨 Summary Tone")
+    tone_choice = st.selectbox("Tone", [
+        "Professional",
+        "Executive (brief)",
+        "Detailed & analytical",
+        "Casual / plain English",
+    ], index=0)
+
     st.markdown("---")
     match_threshold = st.slider(
         "Header match threshold", 0.05, 0.5, 0.15, 0.05,
@@ -115,10 +123,7 @@ with st.sidebar:
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown('<p class="main-header">📊 Business Report Segregator</p>',
             unsafe_allow_html=True)
-st.markdown(
-    '<p class="sub-header">'
-    'Upload PDF → extract tables → AI summaries → Download Word report'
-    '</p>', unsafe_allow_html=True)
+
 
 if not cred_ok:
     st.error("⚠️ AWS credentials unavailable. Run `mwinit -o` in Terminal then click Retry in sidebar.")
@@ -153,13 +158,9 @@ if ref_file:
     os.unlink(ref_tmp)
 
     ref_name = ref_file.name
-    c1, c2 = st.columns(2)
-    c1.metric("📋 Tables found in reference", len(ref_tables))
-    c2.metric("📝 File", ref_name)
+    st.metric("📋 Tables found in reference", len(ref_tables))
 
     if ref_tables:
-        st.markdown('<div class="ok-box">✅ Reference headers loaded — will be used for cross-matching</div>',
-                    unsafe_allow_html=True)
         with st.expander("🔍 Reference table headers", expanded=False):
             for rt in ref_tables:
                 hdrs = ", ".join(str(h) for h in rt["headers"][:8] if str(h).strip())
@@ -181,8 +182,9 @@ st.markdown("---")
 st.markdown("## 📤 Step 2 — Upload PDF")
 
 pdf_file = st.file_uploader("Input PDF", type=["pdf"], key="pdf_upload")
-pdf_tables = None
-pdf_name   = None
+pdf_tables   = None
+pdf_name     = None
+user_context = ""
 
 if pdf_file:
     pdf_name = pdf_file.name
@@ -194,14 +196,9 @@ if pdf_file:
         pdf_tables = extract_all_tables(pdf_tmp)
     os.unlink(pdf_tmp)
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("📋 Tables found", len(pdf_tables))
-    c2.metric("📄 File", pdf_name)
-    c3.metric("🕐 At", datetime.now().strftime("%H:%M:%S"))
+    st.metric("📋 Tables found", len(pdf_tables))
 
     if pdf_tables:
-        st.markdown(f'<div class="ok-box">✅ {len(pdf_tables)} table(s) extracted from PDF</div>',
-                    unsafe_allow_html=True)
         with st.expander("🔍 PDF table headers", expanded=False):
             for pt in pdf_tables:
                 hdrs = ", ".join(str(h) for h in pt["headers"][:8] if str(h).strip())
@@ -210,6 +207,15 @@ if pdf_file:
                     f'({pt["total_rows"]} rows × {pt["total_cols"]} cols): {hdrs}')
     else:
         st.warning("⚠️ No tables detected in this PDF.")
+
+if pdf_tables:
+    st.markdown("#### 💬 Additional Instructions *(optional)*")
+    user_context = st.text_area(
+        label       = "Any specific focus, exclusions, or context for the AI summaries?",
+        placeholder = "e.g. Focus on sites that are over budget. Ignore March data. Highlight US_East region only.",
+        height      = 90,
+        key         = "user_context_input",
+    )
 
 st.markdown("---")
 
@@ -289,11 +295,14 @@ if st.button("🚀 Generate Report", type="primary",
                 )
 
         table["summary"] = generate_summary(
-            table       = table,
+            table               = table,
             ref_example_summary = ref_example,
-            model_id    = model_id,
-            region      = region,
+            model_id            = model_id,
+            region              = region,
+            tone                = tone_choice,
+            user_context        = user_context if user_context.strip() else None,
         )
+
         progress.progress((i + 1) / total,
                           text=f"Done {i+1}/{total}")
 
