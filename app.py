@@ -51,8 +51,11 @@ st.markdown("""
 
 # ── Credentials (once per session) ────────────────────────────────────────────
 if "cred_ok" not in st.session_state:
-    with st.spinner("🔐 Fetching AWS credentials..."):
-        ok, msg, identity = inject_credentials()
+    try:
+        with st.spinner("🔐 Fetching AWS credentials..."):
+            ok, msg, identity = inject_credentials()
+    except Exception as e:
+        ok, msg, identity = False, f"Credential error: {str(e)}", ""
     st.session_state.update(cred_ok=ok, cred_msg=msg, cred_identity=identity)
 
 cred_ok = st.session_state["cred_ok"]
