@@ -154,7 +154,7 @@ def identify_header(
     snapshot,
     model_id: str = DEFAULT_MODEL,
     region:   str = "us-east-1",
-) -> str | None:
+) -> str:
     """Available but not active in current flow."""
     if snapshot is None:
         return None
