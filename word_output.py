@@ -72,7 +72,9 @@ def build_word_report(
 
 def _derive_label(table: dict, index: int) -> str:
     headers = [str(h).strip() for h in table.get("headers", []) if str(h).strip()]
-    return headers[0] if headers else f"Table {index}"
+    label   = headers[0] if headers else f"Table {index}"
+    # Split on ":" and take only the first part (e.g. "Employee Relations: Budget" → "Employee Relations")
+    return label.split(":")[0].strip()
 
 
 def _add_rule(doc):
