@@ -10,7 +10,7 @@ import fitz
 from PIL import Image
 
 SNAPSHOT_DPI     = 150
-MAX_WORD_WIDTH   = 6.0
+MAX_WORD_WIDTH   = 6.4
 TITLE_LOOKAHEAD  = 70   # pts above table top to include for title detection
 
 
