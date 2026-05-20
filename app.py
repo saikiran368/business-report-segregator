@@ -332,7 +332,7 @@ if st.button("🚀 Generate Report", type="primary",
             with col_a:
                 st.markdown("**Snapshot:**")
                 if table.get("snapshot"):
-                    st.image(table["snapshot"], use_column_width=True)
+                    st.image(table["snapshot"], use_container_width=True)
             with col_b:
                 st.markdown("**Data preview:**")
                 import pandas as pd
