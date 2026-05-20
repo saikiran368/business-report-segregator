@@ -32,8 +32,8 @@ def build_word_report(
 
     for i, table in enumerate(tables, start=1):
         # Priority: match_label (ref cross-match) → first header cell → fallback
-        label    = (table.get("match_label")
-                    or _derive_label(table, i))
+        raw_label = (table.get("match_label") or _derive_label(table, i))
+        label     = raw_label.split(":")[0].strip()
         summary  = table.get("summary", ["No summary available."])
         snapshot = table.get("snapshot")
 
@@ -72,9 +72,7 @@ def build_word_report(
 
 def _derive_label(table: dict, index: int) -> str:
     headers = [str(h).strip() for h in table.get("headers", []) if str(h).strip()]
-    label   = headers[0] if headers else f"Table {index}"
-    # Split on ":" and take only the first part (e.g. "Employee Relations: Budget" → "Employee Relations")
-    return label.split(":")[0].strip()
+    return headers[0] if headers else f"Table {index}" 
 
 
 def _add_rule(doc):
